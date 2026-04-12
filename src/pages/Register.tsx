@@ -86,7 +86,7 @@ const Register = () => {
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div><Label>Height (ft) *</Label><Input placeholder="e.g. 5'7\"" value={formData.height || ""} onChange={(e) => updateField("height", e.target.value)} /></div>
+              <div><Label>Height (ft) *</Label><Input placeholder='e.g. 5 feet 7 inch' value={formData.height || ""} onChange={(e) => updateField("height", e.target.value)} /></div>
               <div><Label>Weight (kg)</Label><Input placeholder="e.g. 65" value={formData.weight || ""} onChange={(e) => updateField("weight", e.target.value)} /></div>
               <div>
                 <Label>Blood Group</Label>
