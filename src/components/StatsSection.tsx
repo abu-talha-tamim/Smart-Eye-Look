@@ -1,4 +1,4 @@
-import { Users, UserCheck, Heart, Rings } from "lucide-react";
+import { Users, UserCheck, Heart, HeartHandshake } from "lucide-react";
 import CountUp from "./CountUp";
 
 const stats = [
