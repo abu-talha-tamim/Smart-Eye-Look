@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['Inter', 'Noto Sans Bengali', 'system-ui', 'sans-serif'],
+        bengali: ['Noto Sans Bengali', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -54,14 +54,6 @@ export default {
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
-        },
-        whatsapp: {
-          DEFAULT: "hsl(var(--whatsapp))",
-          foreground: "hsl(var(--whatsapp-foreground))",
-        },
-        navy: {
-          DEFAULT: "hsl(var(--navy))",
-          foreground: "hsl(var(--navy-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
