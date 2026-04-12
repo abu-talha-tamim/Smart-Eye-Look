@@ -2,54 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 270 10% 15%;
+    --foreground: 220 20% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 270 10% 15%;
+    --card-foreground: 220 20% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 270 10% 15%;
+    --popover-foreground: 220 20% 10%;
 
-    --primary: 290 80% 50%;
+    --primary: 220 70% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 330 70% 55%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 220 15% 96%;
+    --secondary-foreground: 220 20% 10%;
 
-    --muted: 270 10% 96%;
-    --muted-foreground: 270 5% 45%;
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 290 60% 95%;
-    --accent-foreground: 290 80% 40%;
+    --accent: 220 70% 45%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 270 10% 90%;
-    --input: 270 10% 90%;
-    --ring: 290 80% 50%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 220 70% 45%;
 
     --radius: 0.75rem;
 
     --success: 145 63% 42%;
     --success-foreground: 0 0% 100%;
 
-    --gradient-start: 290 80% 50%;
-    --gradient-end: 330 70% 55%;
+    --whatsapp: 142 70% 45%;
+    --whatsapp-foreground: 0 0% 100%;
+
+    --navy: 220 50% 15%;
+    --navy-foreground: 0 0% 100%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 290 80% 50%;
+    --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 290 60% 95%;
-    --sidebar-accent-foreground: 290 80% 40%;
-    --sidebar-border: 270 10% 91%;
-    --sidebar-ring: 290 80% 50%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -60,29 +63,17 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+  }
 }
 
 @layer utilities {
-  .gradient-primary {
-    background: linear-gradient(135deg, hsl(290, 80%, 50%), hsl(330, 70%, 55%));
-  }
-  .gradient-primary-light {
-    background: linear-gradient(135deg, hsl(290, 80%, 95%), hsl(330, 70%, 95%));
-  }
-  .gradient-text {
-    background: linear-gradient(135deg, hsl(290, 80%, 50%), hsl(330, 70%, 55%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
   .animate-fade-in {
     animation: fadeIn 0.6s ease-out forwards;
   }
   .animate-slide-up {
     animation: slideUp 0.6s ease-out forwards;
-  }
-  .animate-count-up {
-    animation: countUp 2s ease-out forwards;
   }
 }
 
