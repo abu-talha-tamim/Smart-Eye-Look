@@ -1,21 +1,48 @@
 "use client";
 
-import { products } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShoppingCart, Package, ChevronRight, CheckCircle, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { Product } from "@/data/products";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const router = useRouter();
-  const product = products.find((p) => p.id === id);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
   const [selectedLens, setSelectedLens] = useState("Single Vision");
   const [selectedImage, setSelectedImage] = useState(0);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products/${id}`);
+        const data = await res.json();
+        if (res.ok) {
+          setProduct(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch product details", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) fetchProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="container py-20 flex flex-col items-center">
+        <div className="h-12 w-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-4" />
+        <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Loading Eyewear Details...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (

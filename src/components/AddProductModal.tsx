@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -82,6 +82,7 @@ interface AddProductModalProps {
 const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
   const [open, setOpen] = useState(false);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -109,15 +110,33 @@ const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
     toast.info(`SKU Generated: ${sku}`);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newPreviews: string[] = [];
+      setIsUploading(true);
+      const newUrls: string[] = [];
+      
       for (let i = 0; i < files.length; i++) {
-        const url = URL.createObjectURL(files[i]);
-        newPreviews.push(url);
+        const formData = new FormData();
+        formData.append("file", files[i]);
+        
+        try {
+          const res = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await res.json();
+          if (res.ok) {
+            newUrls.push(data.url);
+          }
+        } catch (error) {
+          toast.error(`Failed to upload ${files[i].name}`);
+        }
       }
-      setPreviews((prev) => [...prev, ...newPreviews]);
+      
+      setPreviews((prev) => [...prev, ...newUrls]);
+      setIsUploading(false);
+      toast.success("Images uploaded to cloud storage");
     }
   };
 
@@ -125,15 +144,28 @@ const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const onInvalid = (errors: any) => {
+    Object.keys(errors).forEach((key) => {
+      toast.error(`${key}: ${errors[key].message}`, {
+        style: { background: '#ef4444', color: 'white' }
+      });
+    });
+  };
+
   const onSubmit = (values: ProductFormValues) => {
-    const newProduct: Product = {
-      id: Math.random().toString(36).substr(2, 9),
+    if (previews.length === 0) {
+      toast.error("Please upload at least one image");
+      return;
+    }
+
+    const productData = {
       name: values.name,
       price: values.hasDiscount && values.discountPrice ? values.discountPrice : values.price,
       originalPrice: values.hasDiscount ? values.price : undefined,
-      image: previews[0] || "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=200&h=200",
-      images: previews.length > 0 ? previews : ["https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=200&h=200"],
+      image: previews[0],
+      images: previews,
       category: values.category,
+      brand: values.brand,
       description: values.description,
       inStock: values.status === "in-stock",
       sku: values.sku,
@@ -141,12 +173,18 @@ const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
       included: values.included,
     };
 
-    onAddProduct(newProduct);
-    toast.success("Product published successfully!");
+    onAddProduct(productData as any);
     setOpen(false);
     form.reset();
     setPreviews([]);
   };
+
+  // Auto-generate SKU if empty
+  useEffect(() => {
+    if (!form.getValues("sku")) {
+      generateSKU();
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -195,10 +233,11 @@ const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
               Save Draft
             </Button>
             <Button
-              onClick={form.handleSubmit(onSubmit)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-10 px-8 rounded-lg shadow-sm active:scale-95 transition-all"
+              onClick={form.handleSubmit(onSubmit, onInvalid)}
+              disabled={isUploading}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-10 px-8 rounded-lg shadow-sm active:scale-95 transition-all disabled:opacity-50"
             >
-              Publish
+              {isUploading ? "Uploading..." : "Publish"}
             </Button>
           </div>
         </div>
@@ -428,6 +467,8 @@ const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
                                       <SelectItem value="womens">Women's Glasses</SelectItem>
                                       <SelectItem value="kids">Kids Glasses</SelectItem>
                                       <SelectItem value="sunglasses">Sunglasses</SelectItem>
+                                      <SelectItem value="prescription">Prescription Glasses</SelectItem>
+                                      <SelectItem value="contact-lenses">Contact Lenses</SelectItem>
                                     </SelectContent>
                                   </Select>
                                 </FormItem>

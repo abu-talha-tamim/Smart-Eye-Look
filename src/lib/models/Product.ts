@@ -34,6 +34,10 @@ const ProductSchema = new Schema(
       required: [true, "Please select a category."],
       enum: ["mens", "womens", "kids", "sunglasses", "prescription", "contact-lenses"],
     },
+    brand: {
+      type: String,
+      required: [true, "Please select a brand."],
+    },
     description: {
       type: String,
       required: [true, "Please provide a description."],
@@ -56,7 +60,21 @@ const ProductSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id.toString();
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+    toObject: {
+      transform(doc, ret) {
+        ret.id = ret._id.toString();
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
   }
 );
 
