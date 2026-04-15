@@ -20,67 +20,92 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <Eye className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold font-serif tracking-tight text-foreground">SmartEyeLook</span>
+        <Link to="/" className="flex items-center gap-3 active:scale-95 transition-transform group">
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <Eye className="h-8 w-8 text-primary relative z-10 group-hover:rotate-[360deg] transition-transform duration-700 ease-in-out" />
+          </div>
+          <div className="flex flex-col -gap-1">
+            <h1 className="text-xl leading-none font-sans font-black tracking-tighter text-navy flex items-baseline">
+              SMART
+              <span className="font-serif italic text-primary ml-0.5 animate-pulse">Eye</span>
+              <span className="font-sans font-light tracking-widest text-[#64748b] text-[10px] ml-1 uppercase">Look</span>
+            </h1>
+            <span className="text-[7px] font-black uppercase tracking-[0.4em] text-primary/40 group-hover:text-primary transition-colors duration-500">Luxury Eyewear</span>
+          </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-10">
           {navLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === l.to ? "text-primary" : "text-muted-foreground"
+              className={`relative text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 group ${
+                location.pathname === l.to ? "text-primary" : "text-[#1e293b]/70 hover:text-primary"
               }`}
             >
               {l.label}
+              <span className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-1 bg-primary rounded-full transition-all duration-300 ${
+                location.pathname === l.to ? "w-4" : "w-0 group-hover:w-6 opacity-0 group-hover:opacity-100"
+              }`} />
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
           <Link to="/login">
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+            <Button variant="ghost" size="icon" className="text-[#64748b] hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 active:scale-90">
               <User className="h-5 w-5" />
             </Button>
           </Link>
-          <Link to="/cart" className="relative">
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+          <Link to="/cart" className="relative group">
+            <Button variant="ghost" size="icon" className="text-[#64748b] hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 active:scale-90">
               <ShoppingCart className="h-5 w-5" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-black shadow-lg shadow-primary/40 border-2 border-white group-hover:scale-110 transition-transform">
                   {totalItems}
                 </span>
               )}
             </Button>
           </Link>
+          <div className="w-px h-6 bg-slate-200 mx-2 hidden md:block" />
           <Button
             variant="ghost"
             size="icon"
             className="md:hidden text-muted-foreground"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? <X className="h-6 w-6 text-primary" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t bg-background animate-fade-in">
-          <nav className="container flex flex-col py-4 gap-3">
+        <div className="md:hidden border-t bg-white animate-in slide-in-from-top-4 duration-300 shadow-2xl overflow-hidden rounded-b-3xl">
+          <nav className="p-8 flex flex-col gap-6">
             {navLinks.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 onClick={() => setMobileOpen(false)}
-                className={`text-sm font-medium py-2 transition-colors hover:text-primary ${
-                  location.pathname === l.to ? "text-primary" : "text-muted-foreground"
+                className={`text-lg font-bold font-serif transition-all flex items-center justify-between group ${
+                  location.pathname === l.to ? "text-primary ml-4" : "text-[#1e293b]/70"
                 }`}
               >
-                {l.label}
+                <span>{l.label}</span>
+                {location.pathname === l.to && (
+                  <div className="h-2 w-2 rounded-full bg-primary shadow-lg shadow-primary/50" />
+                )}
+                {! (location.pathname === l.to) && (
+                  <Eye className="h-4 w-4 opacity-0 group-hover:opacity-40 transition-opacity" />
+                )}
               </Link>
             ))}
+            <div className="pt-6 border-t border-slate-100">
+               <Button className="w-full bg-navy text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-xl shadow-xl shadow-navy/20">
+                 Explore Collection
+               </Button>
+            </div>
           </nav>
         </div>
       )}
