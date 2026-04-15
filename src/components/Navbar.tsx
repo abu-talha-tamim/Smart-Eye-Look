@@ -1,26 +1,30 @@
-import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, User, Menu, X, Eye } from "lucide-react";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { User, Menu, X, Eye } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
+import CartDrawer from "./CartDrawer";
 
 const navLinks = [
-  { label: "Home", to: "/" },
-  { label: "Shop", to: "/shop" },
-  { label: "Categories", to: "/categories" },
-  { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
+  { label: "Home", href: "/" },
+  { label: "Shop", href: "/shop" },
+  { label: "Categories", href: "/categories" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { totalItems } = useCart();
-  const location = useLocation();
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 active:scale-95 transition-transform group">
+        <Link href="/" className="flex items-center gap-3 active:scale-95 transition-transform group">
           <div className="relative">
             <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Eye className="h-8 w-8 text-primary relative z-10 group-hover:rotate-[360deg] transition-transform duration-700 ease-in-out" />
@@ -38,36 +42,27 @@ const Navbar = () => {
         <nav className="hidden md:flex items-center gap-10">
           {navLinks.map((l) => (
             <Link
-              key={l.to}
-              to={l.to}
+              key={l.href}
+              href={l.href}
               className={`relative text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 group ${
-                location.pathname === l.to ? "text-primary" : "text-[#1e293b]/70 hover:text-primary"
+                pathname === l.href ? "text-primary" : "text-[#1e293b]/70 hover:text-primary"
               }`}
             >
               {l.label}
               <span className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-1 bg-primary rounded-full transition-all duration-300 ${
-                location.pathname === l.to ? "w-4" : "w-0 group-hover:w-6 opacity-0 group-hover:opacity-100"
+                pathname === l.href ? "w-4" : "w-0 group-hover:w-6 opacity-0 group-hover:opacity-100"
               }`} />
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-1">
-          <Link to="/login">
+          <Link href="/login">
             <Button variant="ghost" size="icon" className="text-[#64748b] hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 active:scale-90">
               <User className="h-5 w-5" />
             </Button>
           </Link>
-          <Link to="/cart" className="relative group">
-            <Button variant="ghost" size="icon" className="text-[#64748b] hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 active:scale-90">
-              <ShoppingCart className="h-5 w-5" />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-black shadow-lg shadow-primary/40 border-2 border-white group-hover:scale-110 transition-transform">
-                  {totalItems}
-                </span>
-              )}
-            </Button>
-          </Link>
+          <CartDrawer />
           <div className="w-px h-6 bg-slate-200 mx-2 hidden md:block" />
           <Button
             variant="ghost"
@@ -85,18 +80,18 @@ const Navbar = () => {
           <nav className="p-8 flex flex-col gap-6">
             {navLinks.map((l) => (
               <Link
-                key={l.to}
-                to={l.to}
+                key={l.href}
+                href={l.href}
                 onClick={() => setMobileOpen(false)}
                 className={`text-lg font-bold font-serif transition-all flex items-center justify-between group ${
-                  location.pathname === l.to ? "text-primary ml-4" : "text-[#1e293b]/70"
+                  pathname === l.href ? "text-primary ml-4" : "text-[#1e293b]/70"
                 }`}
               >
                 <span>{l.label}</span>
-                {location.pathname === l.to && (
+                {pathname === l.href && (
                   <div className="h-2 w-2 rounded-full bg-primary shadow-lg shadow-primary/50" />
                 )}
-                {! (location.pathname === l.to) && (
+                {pathname !== l.href && (
                   <Eye className="h-4 w-4 opacity-0 group-hover:opacity-40 transition-opacity" />
                 )}
               </Link>

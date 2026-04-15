@@ -1,13 +1,17 @@
-import { useParams, Link } from "react-router-dom";
+"use client";
+
 import { products } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { ShoppingCart, Package, ChevronRight, CheckCircle } from "lucide-react";
+import { ShoppingCart, Package, ChevronRight, CheckCircle, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 
-const ProductDetail = () => {
+export default function ProductDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const product = products.find((p) => p.id === id);
   const { addToCart } = useCart();
   const [selectedLens, setSelectedLens] = useState("Single Vision");
@@ -17,7 +21,7 @@ const ProductDetail = () => {
     return (
       <div className="container py-20 text-center">
         <h1 className="text-2xl font-bold text-foreground mb-4">Product Not Found</h1>
-        <Link to="/shop"><Button>Back to Shop</Button></Link>
+        <Link href="/shop"><Button>Back to Shop</Button></Link>
       </div>
     );
   }
@@ -25,6 +29,7 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     addToCart(product, selectedLens);
     toast.success(`${product.name} added to cart`);
+    router.push("/checkout");
   };
 
   const handleOrderWhatsApp = () => {
@@ -34,12 +39,21 @@ const ProductDetail = () => {
 
   return (
     <div className="container py-10">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
-        <Link to="/" className="hover:text-primary">Home</Link>
-        <ChevronRight className="h-4 w-4" />
-        <Link to="/shop" className="hover:text-primary">Shop</Link>
-        <ChevronRight className="h-4 w-4" />
-        <span className="text-foreground">{product.name}</span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+          <ChevronRight className="h-4 w-4" />
+          <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
+          <ChevronRight className="h-4 w-4" />
+          <span className="text-navy font-bold">{product.name}</span>
+        </div>
+        <Button 
+          variant="ghost" 
+          onClick={() => router.back()}
+          className="w-fit gap-2 text-navy font-bold hover:bg-navy/5"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to Collection
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -127,6 +141,4 @@ const ProductDetail = () => {
       </div>
     </div>
   );
-};
-
-export default ProductDetail;
+}

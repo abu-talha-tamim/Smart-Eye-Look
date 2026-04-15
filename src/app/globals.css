@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 222 47% 11%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 45 60% 75%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222 47% 11%;
+
+    --radius: 1rem;
+
+    --gold: 43 50% 60%;
+    --gold-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --navy: 222 47% 11%;
+    --navy-foreground: 0 0% 100%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-inter), sans-serif;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-playfair), serif;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ken Burns Animation */
+@keyframes kenburns {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.1) translate(-1%, -1%); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
+.animate-ken-burns {
+  animation: kenburns 20s ease-in-out infinite;
+}
+
+/* ML11 Animation Styles */
+.ml11 {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.ml11 .text-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-top: 0.2em;
+  padding-right: 0.05em;
+  padding-bottom: 0.2em;
+  overflow: hidden;
+}
+
+.ml11 .line {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  height: 85%;
+  width: 4px;
+  background-color: var(--primary);
+  transform-origin: 0 50%;
+}
+
+.ml11 .line1 { 
+  top: 50%; 
+  transform: translateY(-50%);
+  left: 0;
+}
+
+.ml11 .letter {
+  display: inline-block;
+  line-height: 1.1em;
+}
+
+/* Slow Left to Right for subtext and buttons */
+.animate-slow-slide-right {
+  opacity: 0;
+  transform: translateX(-50px);
+  animation: slowSlideRight 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.rotate-x-2 {
+  transform: rotateX(2deg);
+}
+
+.rotate-y-2 {
+  transform: rotateY(2deg);
+}
+
+@keyframes slowSlideRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

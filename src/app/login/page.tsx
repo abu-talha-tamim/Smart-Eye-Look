@@ -1,12 +1,13 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
 import { Eye } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const Login = () => {
+export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,6 +51,4 @@ const Login = () => {
       </div>
     </div>
   );
-};
-
-export default Login;
+}

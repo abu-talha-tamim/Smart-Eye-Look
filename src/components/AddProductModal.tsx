@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,13 +18,14 @@ import {
   Sparkles,
   Percent,
   FileText,
-  AlertCircle,
-  PackageCheck,
-  ShieldCheck,
-  SprayCan,
-  Ghost
+  Ghost,
+  ArrowLeft,
+  ChevronDown,
+  LayoutGrid,
+  ShieldCheckIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -134,7 +137,7 @@ const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
       description: values.description,
       inStock: values.status === "in-stock",
       sku: values.sku,
-      lensOptions: ["Single Vision", "Blue Cut", "Bifocal", "Progressive"],
+      lensOptions: ["Single Vision", "Sunglasses", "Bifocal", "Progressive"],
       included: values.included,
     };
 
@@ -148,408 +151,431 @@ const AddProductModal = ({ onAddProduct }: AddProductModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-primary/20 transition-all active:scale-95 group px-6">
+        <Button className="gap-2 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-primary/20 transition-all active:scale-95 group px-6 h-12 rounded-xl">
           <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform" /> 
-          <span className="font-bold">Add Product</span>
+          <span className="font-bold">Add New Product</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl w-[95vw] lg:w-full p-0 overflow-hidden border-none shadow-2xl rounded-[2rem] bg-white max-h-[90vh] overflow-y-auto scrollbar-hide">
-        {/* Header */}
-        <div className="bg-navy p-6 md:p-10 text-white flex flex-col md:flex-row justify-between items-center overflow-hidden relative gap-6">
-          <div className="relative z-10 text-center md:text-left">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold tracking-tight mb-2 flex items-center justify-center md:justify-start gap-3">
-              <Sparkles className="h-8 w-8 text-primary animate-pulse" /> 
-              <span>Create Masterpiece</span>
-            </h2>
-            <p className="text-white/60 font-medium text-[10px] md:text-xs italic uppercase tracking-[0.2em]">
-              SmartEyeLook Luxury Inventory
-            </p>
+      <DialogContent className="max-w-[1200px] w-[95vw] p-0 overflow-hidden border-none shadow-2xl rounded-[1.5rem] bg-[#f8f9fa] max-h-[92vh] flex flex-col">
+        {/* Modern Dashboard Header */}
+        <div className="bg-white px-8 py-5 border-b flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 z-20">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setOpen(false)}
+              className="rounded-lg border border-slate-200 hover:bg-slate-50"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="space-y-0.5">
+              <h2 className="text-xl font-bold text-slate-900 tracking-tight">Add New Product</h2>
+              <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                Last Update {new Date().toLocaleDateString('en-GB')} at {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
           </div>
-          <div className="hidden md:block absolute -right-10 -top-10 opacity-5">
-            <Box className="h-64 w-64 rotate-12" />
-          </div>
-          <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/10 backdrop-blur-md">
-            <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-[10px] uppercase font-black tracking-widest">Admin Session</span>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-red-500 border border-red-100 hover:bg-red-50 rounded-lg h-10 w-10"
+              onClick={() => form.reset()}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="border-slate-200 text-slate-700 font-bold h-10 px-6 rounded-lg hover:bg-slate-50"
+              onClick={() => {
+                toast.success("Draft saved successfully!");
+                setOpen(false);
+              }}
+            >
+              Save Draft
+            </Button>
+            <Button
+              onClick={form.handleSubmit(onSubmit)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-10 px-8 rounded-lg shadow-sm active:scale-95 transition-all"
+            >
+              Publish
+            </Button>
           </div>
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
-              
-              {/* Left Column: Details */}
-              <div className="lg:col-span-7 space-y-10">
+        <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
+          <Form {...form}>
+            <form id="product-form" onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
-                <section className="space-y-8">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-1 bg-primary rounded-full" />
-                    <h3 className="text-2xl font-bold font-serif tracking-tight">Vibe & Identity</h3>
-                  </div>
+                {/* Left Column - Assets & Info */}
+                <div className="lg:col-span-5 space-y-6">
                   
-                  <div className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-muted-foreground/70 flex items-center gap-2">
-                            <Tag className="h-3.5 w-3.5 text-primary" /> Product Full Name
-                          </FormLabel>
-                          <FormControl>
-                            <div className="group relative">
-                              <Input 
-                                placeholder="e.g Titanium Half-Rim" 
-                                className="h-16 px-6 bg-secondary/20 border-2 border-transparent focus-visible:border-primary/20 focus-visible:ring-0 focus-visible:bg-white text-xl font-semibold transition-all rounded-2xl shadow-sm"
-                                {...field} 
-                              />
-                              <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-focus-within:opacity-100 transition-opacity">
-                                <Sparkles className="h-5 w-5 text-primary/40" />
-                              </div>
+                  {/* Image Gallery Control */}
+                  <Card className="border-none shadow-sm rounded-2xl overflow-hidden">
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        {/* Main Preview */}
+                        <div className="md:col-span-12 lg:col-span-7 aspect-square relative rounded-xl overflow-hidden bg-slate-50 border border-slate-100 group">
+                          {previews[0] ? (
+                            <img src={previews[0]} alt="Cover" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                          ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-3">
+                              <ImageIcon className="h-12 w-12 opacity-20" />
+                              <span className="text-xs font-bold uppercase tracking-widest opacity-40">Main Visual</span>
                             </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                          )}
+                          <div className="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full border border-white shadow-sm">
+                            <span className="text-[10px] font-black uppercase text-slate-600 tracking-wider">Cover</span>
+                          </div>
+                        </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="category"
-                        render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-muted-foreground/70 flex items-center gap-2">
-                              <Layers className="h-3.5 w-3.5 text-primary" /> Experience Category
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger className="h-16 px-6 bg-secondary/20 border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-2xl transition-all text-lg font-medium">
-                                  <SelectValue placeholder="Select one" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent className="border-none shadow-2xl rounded-2xl">
-                                <SelectItem value="mens" className="py-3">Men's Boutique</SelectItem>
-                                <SelectItem value="womens" className="py-3">Women's Collection</SelectItem>
-                                <SelectItem value="kids" className="py-3">Junior Fashion</SelectItem>
-                                <SelectItem value="bluecut" className="py-3">Digital Protective</SelectItem>
-                                <SelectItem value="prescription" className="py-3">Luxury Lenses</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="brand"
-                        render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-muted-foreground/70 flex items-center gap-2">
-                              <Sparkles className="h-3.5 w-3.5 text-primary" /> Luxury Brand
-                            </FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger className="h-16 px-6 bg-secondary/20 border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-2xl transition-all text-lg font-medium">
-                                  <SelectValue placeholder="Select one" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent className="border-none shadow-2xl rounded-2xl">
-                                <SelectItem value="rayban" className="py-3">Ray-Ban</SelectItem>
-                                <SelectItem value="oakley" className="py-3">Oakley</SelectItem>
-                                <SelectItem value="gucci" className="py-3">Gucci</SelectItem>
-                                <SelectItem value="smart-eye" className="py-3">SmartEye Signature</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                <section className="space-y-8">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-1 bg-primary rounded-full" />
-                    <h3 className="text-2xl font-bold font-serif tracking-tight">Pricing & Availability</h3>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-secondary/10 to-secondary/30 p-1 md:p-8 rounded-[2rem] space-y-8 border border-secondary/50">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <FormField
-                        control={form.control}
-                        name="price"
-                        render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-muted-foreground/70">MSRP (৳)</FormLabel>
-                            <FormControl>
-                              <div className="relative group">
-                                <div className="absolute left-6 top-1/2 -translate-y-1/2 font-serif text-2xl text-muted-foreground/40 font-bold group-focus-within:text-primary transition-colors">৳</div>
-                                <Input type="number" className="h-16 pl-14 bg-white border-2 border-transparent focus-visible:border-primary/20 focus-visible:ring-0 text-2xl font-serif font-black shadow-sm rounded-2xl" {...field} />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="stock"
-                        render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-muted-foreground/70">Reserved Stock</FormLabel>
-                            <FormControl>
-                              <div className="relative group">
-                                <Box className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
-                                <Input type="number" className="h-16 pl-16 bg-white border-2 border-transparent focus-visible:border-primary/20 focus-visible:ring-0 text-xl font-bold shadow-sm rounded-2xl" {...field} />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="pt-6 border-t border-dashed border-muted-foreground/20">
-                      <FormField
-                        control={form.control}
-                        name="hasDiscount"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-[1.5rem] bg-navy/5 p-6 border-2 border-transparent transition-all group hover:bg-navy/10">
-                            <div className="space-y-1">
-                              <FormLabel className="text-lg font-bold text-navy flex items-center gap-2">
-                                <Percent className="h-5 w-5 text-primary" /> Seasonal Offer
-                              </FormLabel>
-                              <FormDescription className="text-xs font-medium text-muted-foreground">
-                                Override standard pricing with a special boutique label
-                              </FormDescription>
+                        {/* Thumbs Grid */}
+                        <div className="md:col-span-12 lg:col-span-5 grid grid-cols-2 gap-4 h-full">
+                          {/* Image slots 2-4 */}
+                          {[1, 2, 3].map((idx) => (
+                            <div key={idx} className="aspect-square relative rounded-xl overflow-hidden bg-slate-50 border border-slate-100 group">
+                              {previews[idx] ? (
+                                <>
+                                  <img src={previews[idx]} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
+                                  <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button type="button" onClick={() => removeImage(idx)} className="text-white hover:text-red-400">
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="w-full h-full border-2 border-dashed border-slate-200 rounded-xl" />
+                              )}
                             </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className="data-[state=checked]:bg-primary h-7 w-12"
-                              />
-                            </FormControl>
-                          </FormItem>
+                          ))}
+                          {/* Add Button */}
+                          <label className="aspect-square rounded-xl border-2 border-dashed border-blue-200 bg-blue-50/30 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors group">
+                             <Plus className="h-5 w-5 text-blue-500 group-hover:scale-110 transition-transform" />
+                             <input type="file" multiple className="hidden" onChange={handleImageUpload} accept="image/*" />
+                          </label>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Visibility Card */}
+                  <Card className="border-none shadow-sm rounded-2xl">
+                    <CardContent className="p-6">
+                      <h3 className="text-sm font-bold text-slate-900 mb-2">Visibility</h3>
+                      <p className="text-[11px] text-slate-500 mb-6">You can change the visibility of this product for customers</p>
+                      
+                      <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field }) => (
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-slate-700 flex items-center gap-2">
+                              {field.value === "in-stock" ? "Visible" : "Hidden"}
+                            </span>
+                            <Switch
+                              checked={field.value === "in-stock"}
+                              onCheckedChange={(checked) => field.onChange(checked ? "in-stock" : "out-of-stock")}
+                              className="data-[state=checked]:bg-blue-500"
+                            />
+                          </div>
                         )}
                       />
+                    </CardContent>
+                  </Card>
 
-                      {hasDiscount && (
-                        <div className="mt-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                  {/* Related Items Card */}
+                  <Card className="border-none shadow-sm rounded-2xl">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-bold text-slate-900">Related Items</h3>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 border border-slate-100 rounded-lg">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <p className="text-[10px] text-slate-500 mb-6">Add related items to this product</p>
+                      
+                      <div className="space-y-4">
+                         {[
+                           { name: "Premium Lens Kit", price: 28 },
+                           { name: "Travel Storage Case", price: 18 },
+                           { name: "Microfiber Bundle", price: 20 }
+                         ].map((item, i) => (
+                           <div key={i} className="flex items-center gap-4 group">
+                             <div className="h-12 w-12 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center">
+                               <Box className="h-5 w-5 text-slate-300" />
+                             </div>
+                             <div className="flex-1 space-y-0.5">
+                               <p className="text-[11px] font-bold text-slate-800 tracking-tight">{item.name}</p>
+                               <p className="text-[10px] font-medium text-slate-500">$ {item.price}</p>
+                             </div>
+                             <button type="button" className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-slate-400 hover:text-red-500">
+                               <Trash2 className="h-3.5 w-3.5" />
+                             </button>
+                           </div>
+                         ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Preview Card */}
+                  <Card className="border-none shadow-sm rounded-2xl">
+                    <CardContent className="p-6">
+                      <h3 className="text-sm font-bold text-slate-900 mb-2">Preview</h3>
+                      <p className="text-[11px] text-slate-500 mb-6">Want to see how your product will look like?</p>
+                      <Button variant="outline" className="w-full border-slate-200 text-slate-700 font-black h-12 rounded-xl text-[10px] uppercase tracking-widest">
+                        Preview
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Right Column - Product Details */}
+                <div className="lg:col-span-7">
+                  <Card className="border-none shadow-sm rounded-2xl overflow-hidden min-h-full bg-white">
+                    <CardContent className="p-10">
+                      <div className="flex items-center justify-between mb-8">
+                        <div>
+                          <h3 className="text-lg font-bold text-navy tracking-tight">Product Details</h3>
+                          <p className="text-xs text-slate-500 font-medium">Key info to describe and display your product.</p>
+                        </div>
+                        <div className="px-3 py-1 bg-slate-50 rounded-full border border-slate-100">
+                          <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Status: Draft</span>
+                        </div>
+                      </div>
+
+                      <Tabs defaultValue="general" className="w-full">
+                        <TabsList className="w-full bg-slate-50 p-1 mb-8 h-12 rounded-xl grid grid-cols-2">
+                          <TabsTrigger value="general" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-bold text-xs uppercase tracking-widest">General</TabsTrigger>
+                          <TabsTrigger value="advanced" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-bold text-xs uppercase tracking-widest">Advanced</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="general" className="space-y-6 animate-in fade-in slide-in-from-right-2 duration-300">
                           <FormField
                             control={form.control}
-                            name="discountPrice"
+                            name="name"
                             render={({ field }) => (
-                              <FormItem className="space-y-3">
-                                <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-primary">Limited Value Price (৳)</FormLabel>
+                              <FormItem className="space-y-2">
+                                <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Product Name <span className="text-red-500">*</span></FormLabel>
                                 <FormControl>
-                                  <div className="relative">
-                                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-serif font-black text-primary">৳</div>
-                                    <Input type="number" className="h-20 pl-16 bg-primary/5 border-2 border-primary/20 text-3xl font-serif font-black text-primary rounded-[1.5rem] shadow-inner focus-visible:ring-0" {...field} />
-                                  </div>
+                                  <Input placeholder="e.g. Titanium Half-Rim Glasses" className="h-12 bg-white border-slate-200 focus-visible:ring-blue-500/20 text-sm font-medium rounded-xl" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </section>
 
-                {/* What's Included Section */}
-                <section className="space-y-8">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-1 bg-primary rounded-full" />
-                    <h3 className="text-2xl font-bold font-serif tracking-tight">Full Presentation</h3>
-                  </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                              control={form.control}
+                              name="status"
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Inventory Status <span className="text-red-500">*</span></FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-sm font-medium focus:ring-blue-500/20">
+                                        <SelectValue placeholder="Choose product status" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent className="rounded-xl border-slate-200">
+                                      <SelectItem value="in-stock">Available / Active</SelectItem>
+                                      <SelectItem value="out-of-stock">Unavailable / Archive</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="brand"
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Brand <span className="text-red-500">*</span></FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-sm font-medium focus:ring-blue-500/20">
+                                        <SelectValue placeholder="Select the brand name" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent className="rounded-xl border-slate-200">
+                                      <SelectItem value="rayban">Ray-Ban</SelectItem>
+                                      <SelectItem value="oakley">Oakley</SelectItem>
+                                      <SelectItem value="gucci">Gucci</SelectItem>
+                                      <SelectItem value="smart-eye">SmartEye</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </FormItem>
+                              )}
+                            />
+                          </div>
 
-                  <FormField
-                    control={form.control}
-                    name="included"
-                    render={({ field }) => (
-                      <FormItem className="space-y-4">
-                        <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-muted-foreground/70">Luxury Extras Included</FormLabel>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {[
-                            { name: "Premium Box", icon: Box, color: "bg-amber-500/10 text-amber-600" },
-                            { name: "Cleaning Kit", icon: SprayCan, color: "bg-blue-500/10 text-blue-600" },
-                            { name: "Warranty Card", icon: ShieldCheck, color: "bg-emerald-500/10 text-emerald-600" },
-                            { name: "Microfiber Cloth", icon: Sparkles, color: "bg-purple-500/10 text-purple-600" }
-                          ].map((item) => (
-                            <div 
-                              key={item.name}
-                              onClick={() => {
-                                const current = field.value || [];
-                                const updated = current.includes(item.name)
-                                  ? current.filter(v => v !== item.name)
-                                  : [...current, item.name];
-                                field.onChange(updated);
-                              }}
-                              className={cn(
-                                "flex items-center gap-4 p-5 rounded-2xl cursor-pointer border-2 transition-all duration-300",
-                                field.value?.includes(item.name) 
-                                  ? "bg-white border-primary shadow-lg scale-[1.02] ring-4 ring-primary/5" 
-                                  : "bg-secondary/20 border-transparent hover:border-secondary/50 grayscale opacity-60 hover:grayscale-0 hover:opacity-100"
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                              control={form.control}
+                              name="category"
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Category <span className="text-red-500">*</span></FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-sm font-medium focus:ring-blue-500/20">
+                                        <SelectValue placeholder="Select main category" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent className="rounded-xl border-slate-200">
+                                      <SelectItem value="mens">Men's Glasses</SelectItem>
+                                      <SelectItem value="womens">Women's Glasses</SelectItem>
+                                      <SelectItem value="kids">Kids Glasses</SelectItem>
+                                      <SelectItem value="sunglasses">Sunglasses</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </FormItem>
                               )}
-                            >
-                              <div className={cn("p-2.5 rounded-xl", item.color)}>
-                                <item.icon className="h-6 w-6" />
-                              </div>
-                              <span className="font-bold text-sm tracking-tight">{item.name}</span>
-                              {field.value?.includes(item.name) && (
-                                <PackageCheck className="h-5 w-5 text-primary ml-auto" />
-                              )}
+                            />
+                            <div className="space-y-2">
+                               <label className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Subcategory</label>
+                               <Select defaultValue="prescription">
+                                  <SelectTrigger className="h-12 bg-white border-slate-200 rounded-xl text-sm font-medium focus:ring-blue-500/20">
+                                    <SelectValue placeholder="Select subcategory" />
+                                  </SelectTrigger>
+                                  <SelectContent className="rounded-xl border-slate-200">
+                                    <SelectItem value="prescription">Prescription</SelectItem>
+                                    <SelectItem value="fashion">Fashion/Style</SelectItem>
+                                    <SelectItem value="sport">Sport Perform</SelectItem>
+                                  </SelectContent>
+                               </Select>
                             </div>
-                          ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </section>
-              </div>
+                          </div>
 
-              {/* Right Column: Media & Meta */}
-              <div className="lg:col-span-5 space-y-10">
-                
-                <section className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold font-serif flex items-center gap-3 tracking-tight">
-                      <ImageIcon className="h-6 w-6 text-primary" /> Visual Portfolio
-                    </h3>
-                    <div className="px-3 py-1 bg-primary/10 rounded-full">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-primary">
-                        {previews.length} Perspectives
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    {previews.map((url, i) => (
-                      <div key={i} className="group relative aspect-square rounded-[1.5rem] overflow-hidden shadow-xl ring-2 ring-white">
-                        <img src={url} alt="Preview" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-navy/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center backdrop-blur-sm">
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            onClick={() => removeImage(i)}
-                            className="rounded-full scale-0 group-hover:scale-100 transition-transform duration-500 shadow-2xl"
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                    <label className="flex flex-col items-center justify-center aspect-square rounded-[1.5rem] border-2 border-dashed border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 cursor-pointer transition-all duration-500 group relative overflow-hidden">
-                      <div className="relative z-10 flex flex-col items-center">
-                        <div className="h-14 w-14 rounded-full bg-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform mb-4 border border-primary/10">
-                          <Upload className="h-7 w-7 text-primary" />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Add Frames</span>
-                      </div>
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br from-primary to-transparent" />
-                      <input type="file" multiple className="hidden" onChange={handleImageUpload} accept="image/*" />
-                    </label>
-                  </div>
-                </section>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField
+                              control={form.control}
+                              name="price"
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Price <span className="text-red-500">*</span></FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <Input type="number" placeholder="e.g. 29.99" className="h-12 bg-white border-slate-200 rounded-xl text-sm font-medium pr-16" {...field} />
+                                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase tracking-widest">BDT</div>
+                                    </div>
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="discountPrice"
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Discount</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <Input type="number" placeholder="e.g. 15" className="h-12 bg-white border-slate-200 rounded-xl text-sm font-medium pr-10" {...field} />
+                                      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 opacity-60">%</div>
+                                    </div>
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                          </div>
 
-                <section className="space-y-10 pt-4">
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem className="space-y-4">
-                        <FormLabel className="text-[11px] font-black uppercase tracking-[0.15em] text-muted-foreground/70 flex items-center gap-2">
-                          <FileText className="h-3.5 w-3.5 text-primary" /> Product Narrative
-                        </FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Craft a compelling story for this luxury accessory..." 
-                            className="min-h-[220px] bg-secondary/20 border-2 border-transparent focus-visible:border-primary/20 focus-visible:bg-white resize-none p-6 text-lg leading-relaxed rounded-[1.5rem] transition-all shadow-sm"
-                            {...field} 
+                          <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                              <FormItem className="space-y-2">
+                                <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Description</FormLabel>
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="Write a short description highlighting key benefits and features" 
+                                    className="min-h-[120px] bg-white border-slate-200 rounded-xl text-sm font-medium p-6 resize-none"
+                                    {...field} 
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        </TabsContent>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-secondary/10 p-6 rounded-[2rem] border border-secondary/50">
-                    <FormField
-                      control={form.control}
-                      name="sku"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Registry ID</FormLabel>
-                          <FormControl>
-                            <div className="flex gap-2">
-                              <Input className="h-14 bg-white border-2 border-transparent focus-visible:border-primary/20 font-mono text-center text-sm rounded-xl tracking-tighter" readOnly {...field} />
-                              <Button type="button" variant="ghost" size="icon" onClick={generateSKU} className="h-14 w-14 bg-white rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm border border-secondary/50">
-                                <RefreshCcw className="h-5 w-5" />
-                              </Button>
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Collection Status</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger className="h-14 bg-white border-2 border-transparent focus:border-primary/20 text-xs font-black uppercase tracking-widest rounded-xl shadow-sm border border-secondary/50">
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border-none shadow-2xl rounded-2xl">
-                              <SelectItem value="in-stock" className="text-xs font-bold py-3">Public / Available</SelectItem>
-                              <SelectItem value="out-of-stock" className="text-xs font-bold py-3">Private / Archive</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </section>
+                        <TabsContent value="advanced" className="space-y-8 animate-in fade-in slide-in-from-left-2 duration-300">
+                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <FormField
+                               control={form.control}
+                               name="sku"
+                               render={({ field }) => (
+                                 <FormItem className="space-y-2">
+                                   <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Global SKU</FormLabel>
+                                   <FormControl>
+                                     <div className="flex gap-2">
+                                       <Input className="h-12 bg-white border-slate-200 rounded-xl font-mono text-xs font-bold" readOnly {...field} />
+                                       <Button type="button" onClick={generateSKU} variant="outline" size="icon" className="h-12 w-12 rounded-xl border-slate-200 hover:bg-slate-50">
+                                         <RefreshCcw className="h-4 w-4 text-slate-400" />
+                                       </Button>
+                                     </div>
+                                   </FormControl>
+                                 </FormItem>
+                               )}
+                             />
+                             <FormField
+                               control={form.control}
+                               name="stock"
+                               render={({ field }) => (
+                                 <FormItem className="space-y-2">
+                                   <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Stock Units</FormLabel>
+                                   <FormControl>
+                                     <div className="relative">
+                                       <Input type="number" className="h-12 bg-white border-slate-200 rounded-xl text-sm font-medium pr-10" {...field} />
+                                       <Box className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
+                                     </div>
+                                   </FormControl>
+                                 </FormItem>
+                               )}
+                             />
+                           </div>
 
-              </div>
-            </div>
-
-            <div className="mt-16 pt-10 border-t border-dashed flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="flex items-center gap-4 text-muted-foreground bg-secondary/20 px-6 py-3 rounded-full border border-secondary/50">
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Auto-Registry Active</span>
+                           <FormField
+                              control={form.control}
+                              name="included"
+                              render={({ field }) => (
+                                <FormItem className="space-y-4">
+                                  <FormLabel className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">Included Extras</FormLabel>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {["Premium Box", "Cleaning Kit", "Microfiber Cloth", "Warranty Card"].map((item) => (
+                                      <div 
+                                        key={item}
+                                        onClick={() => {
+                                          const current = field.value || [];
+                                          const updated = current.includes(item)
+                                            ? current.filter(v => v !== item)
+                                            : [...current, item];
+                                          field.onChange(updated);
+                                        }}
+                                        className={cn(
+                                          "flex items-center justify-between p-4 rounded-xl cursor-pointer border-2 transition-all text-xs font-bold",
+                                          field.value?.includes(item) 
+                                            ? "bg-blue-50/50 border-blue-200 text-blue-600" 
+                                            : "bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100"
+                                        )}
+                                      >
+                                        {item}
+                                        {field.value?.includes(item) && <ShieldCheckIcon className="h-4 w-4 text-blue-500" />}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </FormItem>
+                              )}
+                            />
+                        </TabsContent>
+                      </Tabs>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
-              <div className="flex items-center gap-6 w-full md:w-auto">
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  className="font-black flex-1 md:flex-none tracking-[0.2em] text-[10px] uppercase h-16 hover:text-primary transition-colors px-8"
-                  onClick={() => setOpen(false)}
-                >
-                  Save Workspace
-                </Button>
-                <Button 
-                  type="submit" 
-                  className="bg-navy hover:bg-navy/90 text-white shadow-2xl shadow-navy/20 h-16 px-16 rounded-2xl font-black uppercase tracking-[0.2em] text-xs flex-1 md:flex-none active:scale-95 transition-all group overflow-hidden relative"
-                >
-                  <span className="relative z-10">Debut Collection</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-white/10 to-primary/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                </Button>
-              </div>
-            </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );

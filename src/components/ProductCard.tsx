@@ -2,7 +2,7 @@ import { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { toast } from "sonner";
 
 const ProductCard = ({ product }: { product: Product }) => {
@@ -22,7 +22,7 @@ const ProductCard = ({ product }: { product: Product }) => {
   };
 
   return (
-    <Link to={`/product/${product.id}`} className="group block relative perspective-1000">
+    <Link href={`/product/${product.id}`} className="group block relative perspective-1000">
       <div className="relative bg-white rounded-[2rem] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] group-hover:-translate-y-3 group-hover:rotate-x-2 group-hover:rotate-y-2 border border-black/5">
         {/* Product Image Wrapper */}
         <div className="relative aspect-[4/5] overflow-hidden bg-[#f9f9f9]">

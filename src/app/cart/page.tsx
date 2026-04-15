@@ -1,10 +1,14 @@
+"use client";
+
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const Cart = () => {
+export default function CartPage() {
   const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
+  const router = useRouter();
 
   if (items.length === 0) {
     return (
@@ -12,7 +16,7 @@ const Cart = () => {
         <ShoppingBag className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-foreground mb-2">Your cart is empty</h1>
         <p className="text-muted-foreground mb-6">Looks like you haven't added anything yet.</p>
-        <Link to="/shop"><Button>Browse Products</Button></Link>
+        <Link href="/shop"><Button>Browse Products</Button></Link>
       </div>
     );
   }
@@ -32,15 +36,18 @@ const Cart = () => {
                 <p className="text-lg font-bold text-primary mt-1">৳{item.product.price.toLocaleString()}</p>
               </div>
               <div className="flex flex-col items-end justify-between">
-                <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.product.id)} className="text-destructive">
+                <button 
+                  onClick={() => removeFromCart(item.product.id, item.lensType)}
+                  className="p-2 text-slate-300 hover:text-red-500 transition-colors"
+                >
                   <Trash2 className="h-4 w-4" />
-                </Button>
+                </button>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>
+                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.lensType, item.quantity - 1)}>
                     <Minus className="h-3 w-3" />
                   </Button>
                   <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
-                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.quantity + 1)}>
+                  <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product.id, item.lensType, item.quantity + 1)}>
                     <Plus className="h-3 w-3" />
                   </Button>
                 </div>
@@ -65,12 +72,10 @@ const Cart = () => {
               <span className="text-primary">৳{totalPrice.toLocaleString()}</span>
             </div>
           </div>
-          <Button className="w-full mb-3" size="lg">Checkout</Button>
+          <Button className="w-full mb-3" size="lg" onClick={() => router.push("/checkout")}>Checkout</Button>
           <Button variant="outline" onClick={clearCart} className="w-full" size="sm">Clear Cart</Button>
         </div>
       </div>
     </div>
   );
-};
-
-export default Cart;
+}

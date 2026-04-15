@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Product } from "@/data/products";
 
@@ -10,8 +12,8 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addToCart: (product: Product, lensType?: string) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (productId: string, lensType: string) => void;
+  updateQuantity: (productId: string, lensType: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -36,14 +38,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeFromCart = (productId: string) => {
-    setItems((prev) => prev.filter((i) => i.product.id !== productId));
+  const removeFromCart = (productId: string, lensType: string) => {
+    setItems((prev) => prev.filter((i) => !(i.product.id === productId && i.lensType === lensType)));
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) return removeFromCart(productId);
+  const updateQuantity = (productId: string, lensType: string, quantity: number) => {
+    if (quantity <= 0) return removeFromCart(productId, lensType);
     setItems((prev) =>
-      prev.map((i) => (i.product.id === productId ? { ...i, quantity } : i))
+      prev.map((i) => (i.product.id === productId && i.lensType === lensType ? { ...i, quantity } : i))
     );
   };
 
