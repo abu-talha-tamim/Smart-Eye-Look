@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "./ProductCard";
 import { Product } from "@/data/products";
+import { ArrowRight, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 const FeaturedCollections = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,10 +17,10 @@ const FeaturedCollections = () => {
         const res = await fetch("/api/products");
         const data = await res.json();
         if (Array.isArray(data)) {
-          setProducts(data.slice(0, 8));
+          setProducts(data.slice(0, 4)); // Show only 4 featured
         }
       } catch (error) {
-        console.error("Failed to fetch featured collection", error);
+        console.error("Failed to load featured collection");
       } finally {
         setLoading(false);
       }
@@ -27,34 +28,36 @@ const FeaturedCollections = () => {
     fetchProducts();
   }, []);
 
+  if (loading) return null;
+
   return (
-    <section className="bg-secondary/30 relative overflow-hidden section-padding">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--accent)_0%,_transparent_70%)] opacity-[0.03] pointer-events-none" />
-      
-      <div className="container relative py-24 md:py-32">
-        <div className="flex flex-col items-center text-center mb-16 md:mb-24">
-          <span className="text-secondary-foreground/60 text-xs uppercase tracking-[0.4em] font-bold mb-4">Curated Selection</span>
-          <h2 className="text-4xl md:text-6xl font-serif text-navy mb-6">Featured Collections</h2>
-          <div className="h-1 w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+    <section className="py-24 bg-[#fcfcfd] overflow-hidden">
+      <div className="container px-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-3 mb-6">
+               <div className="h-px w-12 bg-primary" />
+               <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Designer Series</span>
+               <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black text-navy leading-none tracking-tight mb-4">Elite Selection</h2>
+            <p className="text-slate-500 font-medium leading-relaxed max-w-sm">Hand-picked luxury eyewear curated for your unique optical signature.</p>
+          </div>
           
-          <Link href="/shop" className="text-sm font-black uppercase tracking-[0.2em] text-primary flex items-center gap-2 group hover:translate-x-2 transition-transform duration-300">
-            Discover All <ArrowRight className="h-4 w-4" />
+          <Link href="/shop">
+            <Button variant="ghost" className="group text-navy hover:text-primary gap-2 font-black uppercase text-[10px] tracking-widest px-0">
+               Explore Full Boutique <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </Link>
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 4, 4].map((i) => (
-              <div key={i} className="aspect-[4/5] bg-slate-100 animate-pulse rounded-[2rem]" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 md:gap-y-16">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {products.map((p) => (
+            <div key={p.id} className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+               <ProductCard product={p} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

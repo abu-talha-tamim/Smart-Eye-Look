@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, Menu, X, Eye } from "lucide-react";
+import { User, Menu, X, Eye, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import CartDrawer from "./CartDrawer";
+import { useSession } from "next-auth/react";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -20,6 +21,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { totalItems } = useCart();
   const pathname = usePathname();
+  const { data: session }: any = useSession();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
@@ -57,11 +59,20 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-1">
-          <Link href="/login">
-            <Button variant="ghost" size="icon" className="text-[#64748b] hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 active:scale-90">
-              <User className="h-5 w-5" />
-            </Button>
-          </Link>
+          {session ? (
+            <Link href="/admin">
+              <Button variant="ghost" className="hidden md:flex gap-2 text-navy hover:text-primary font-black text-[10px] uppercase tracking-widest">
+                <ShieldCheck className="h-4 w-4" /> Dashboard
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <Button variant="ghost" size="icon" className="text-[#64748b] hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 active:scale-90">
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
+          )}
+          
           <CartDrawer />
           <div className="w-px h-6 bg-slate-200 mx-2 hidden md:block" />
           <Button
@@ -96,10 +107,21 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
+
+            {session && (
+              <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full bg-navy text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-xl mb-4 gap-2">
+                  <ShieldCheck className="h-4 w-4" /> Admin Dashboard
+                </Button>
+              </Link>
+            )}
+
             <div className="pt-6 border-t border-slate-100">
-               <Button className="w-full bg-navy text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-xl shadow-xl shadow-navy/20">
-                 Explore Collection
-               </Button>
+               <Link href="/shop" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full bg-primary text-white font-black uppercase tracking-widest text-[10px] h-12 rounded-xl shadow-xl shadow-primary/20">
+                  Explore Collection
+                </Button>
+               </Link>
             </div>
           </nav>
         </div>

@@ -1,98 +1,94 @@
+"use client";
+
 import { useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileUp, Glasses, HeartPulse, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const PrescriptionSection = () => {
-  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      toast({
-        title: "Prescription Uploaded",
-        description: `Successfully uploaded ${file.name}. Our experts will review it soon!`,
+      toast.success("Eye Report Received", {
+        description: `Verified ${file.name} for precision crafting.`,
+        style: { background: "#06152a", color: "white", border: "1px solid #1e2e4a" }
       });
     }
   };
 
   return (
     <section className="bg-white py-24 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-50" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/50 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-50" />
-      
-      <div className="container relative">
-        <div className="flex flex-col items-center text-center mb-16">
-          <span className="text-primary font-bold tracking-widest uppercase text-xs mb-4">Professional Care</span>
-          <h2 className="text-4xl md:text-5xl font-serif text-navy mb-6">Need a Prescription?</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Upload your existing prescription or visit us for a professional eye exam. 
-            We'll craft your perfect lenses with precision and care.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-auto lg:h-[600px] mb-16">
-          {/* Left side: two horizontally stacked (side-by-side) images */}
-          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8 h-[600px] lg:h-full">
-            <div className="relative group overflow-hidden rounded-[2.5rem] shadow-2xl border border-white/20">
-              <img 
-                src="/assets/eye-exam.png" 
-                alt="Eye Examination" 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-500" />
-              <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <p className="text-lg font-bold">Expert Consultation</p>
-              </div>
-            </div>
-            <div className="relative group overflow-hidden rounded-[2.5rem] shadow-2xl border border-white/20">
-              <img 
-                src="/assets/prescription-doc.png" 
-                alt="Medical Prescription" 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-500" />
-              <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <p className="text-lg font-bold">Precision Mapping</p>
-              </div>
-            </div>
+      <div className="container max-w-6xl relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* Visual Showcase - ALIGNED LEFT */}
+          <div className="relative group order-first">
+             <div className="absolute -inset-4 bg-primary/5 rounded-[3.5rem] blur-2xl group-hover:bg-primary/10 transition-colors duration-700" />
+             <div className="relative aspect-[16/10] sm:aspect-square rounded-[3rem] overflow-hidden shadow-2xl border border-slate-100 bg-[#06152a]">
+                <img 
+                   src="/assets/prescription-doc.png" 
+                   alt="Boutique Optical Care" 
+                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/40 via-transparent to-transparent" />
+                <div className="absolute bottom-10 left-10 right-10 p-8 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                   <div className="flex items-center gap-2 mb-3 text-orange-500 font-black uppercase text-[10px] tracking-[0.3em]">
+                      <Sparkles className="h-4 w-4" /> Specialized Care
+                   </div>
+                   <h4 className="text-2xl font-black text-navy leading-tight tracking-tight">World-Class Lens Precision</h4>
+                </div>
+             </div>
           </div>
 
-          {/* Right side: one vertical image */}
-          <div className="lg:col-span-4 relative group overflow-hidden rounded-[2.5rem] shadow-2xl border border-white/20 h-[600px] lg:h-full">
-            <img 
-              src="/assets/pediatric-exam.png" 
-              alt="Pediatric Eye Care" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-500" />
-            <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <p className="text-lg font-bold">Family Eye Care</p>
+          {/* Service Detail - ALIGNED RIGHT */}
+          <div className="flex flex-col">
+            <div className="mb-10">
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-6 block">Vision Health Command</span>
+              <h2 className="text-5xl md:text-6xl font-black text-navy leading-[1.1] tracking-tighter mb-8">Vision Power & Care</h2>
+              <div className="space-y-6">
+                 <div className="flex items-start gap-4 p-8 rounded-[2rem] bg-slate-50 border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:shadow-navy/5">
+                    <div className="h-14 w-14 rounded-2xl bg-white flex items-center justify-center text-navy shrink-0 shadow-lg border border-slate-50">
+                       <Glasses className="h-7 w-7" />
+                    </div>
+                    <div>
+                       <h4 className="font-extrabold text-navy text-xl mb-1 tracking-tight">Standard Lens Pairing</h4>
+                       <p className="text-sm text-slate-500 font-medium leading-relaxed">Choose your frame and we'll expertly pair it with our high-definition lenses.</p>
+                    </div>
+                 </div>
+                 
+                 <div className="flex items-start gap-4 p-8 rounded-[2rem] bg-slate-50 border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:shadow-navy/5">
+                    <div className="h-14 w-14 rounded-2xl bg-white flex items-center justify-center text-navy shrink-0 shadow-lg border border-slate-50">
+                       <HeartPulse className="h-7 w-7 text-orange-500" />
+                    </div>
+                    <div>
+                       <h4 className="font-extrabold text-navy text-xl mb-1 tracking-tight">Doctor's Prescription</h4>
+                       <p className="text-sm text-slate-500 font-medium leading-relaxed">Simply upload your eye report or "Choshmar Prescription" for precise mapping.</p>
+                    </div>
+                 </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-6 items-center">
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept="image/*,.pdf"
+                onChange={handleFileUpload}
+              />
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full sm:w-auto h-16 px-12 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black uppercase tracking-[0.2em] text-[11px] gap-4 shadow-2xl shadow-orange-500/20 transition-all active:scale-95 group"
+              >
+                 Upload Eye Report 🔥
+              </Button>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-3">
+                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-xl shadow-emerald-500/50 animate-pulse" />
+                 Optical Desk Active
+              </p>
             </div>
           </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-6">
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            className="hidden" 
-            accept="image/*,.pdf"
-            onChange={handleFileUpload}
-          />
-          <Button 
-            size="lg" 
-            onClick={() => fileInputRef.current?.click()}
-            className="h-20 px-12 rounded-2xl bg-primary hover:bg-primary/95 text-xl font-bold shadow-2xl shadow-primary/30 transition-all hover:-translate-y-2 hover:shadow-primary/40 group active:scale-95"
-          >
-            Upload Prescription
-            <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
-          </Button>
-          <p className="text-sm text-muted-foreground font-medium flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            Accepted formats: JPG, PNG, PDF
-          </p>
         </div>
       </div>
     </section>

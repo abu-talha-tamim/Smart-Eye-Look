@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     
     return NextResponse.json(product, { status: 201 });
   } catch (error: any) {
-    console.error("❌ API Error [POST /api/products]:", error.message);
+    console.error("API Error [POST /api/products]:", error.message);
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
